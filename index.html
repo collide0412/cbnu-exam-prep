@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Ôn thi Toàn diện</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1, h2 { color: #2c3e50; }
+        .subject-tag { display: inline-block; background: #3498db; color: white; padding: 5px 10px; border-radius: 4px; font-size: 14px; margin-bottom: 15px; }
+        textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px; resize: vertical; box-sizing: border-box; }
+        button { background: #2ecc71; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 4px; margin-right: 10px; }
+        button:hover { background: #27ae60; }
+        .btn-secondary { background: #95a5a6; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        #feedback { margin-top: 20px; padding: 15px; border-radius: 4px; display: none; }
+        .correct { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .incorrect { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        #original-answer { margin-top: 15px; background: #e9ecef; padding: 15px; border-radius: 4px; display: none; white-space: pre-line; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ôn tập Tự luận</h1>
+        <div id="quiz-container">
+            <span class="subject-tag" id="subject">Loading...</span>
+            <h2 id="question">Đang tải câu hỏi...</h2>
+            <textarea id="answer-input" placeholder="Nhập câu trả lời của bạn vào đây..."></textarea>
+            <br>
+            <button onclick="checkAnswer()">Kiểm tra</button>
+            <button class="btn-secondary" onclick="showAnswer()">Xem đáp án gốc</button>
+            <button class="btn-secondary" onclick="nextQuestion()">Câu tiếp theo</button>
+            
+            <div id="feedback"></div>
+            <div id="original-answer"></div>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentIndex = 0;
+
+        // Tải dữ liệu từ data.json
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                questions = data;
+                loadQuestion();
+            });
+
+        function loadQuestion() {
+            if(questions.length === 0) return;
+            document.getElementById('subject').innerText = questions[currentIndex].subject;
+            document.getElementById('question').innerText = questions[currentIndex].question;
+            document.getElementById('answer-input').value = '';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('original-answer').style.display = 'none';
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer-input').value.toLowerCase();
+            const currentQ = questions[currentIndex];
+            let matchCount = 0;
+
+            // Kiểm tra từng keyword
+            currentQ.keywords.forEach(keyword => {
+                if (userAnswer.includes(keyword.toLowerCase())) {
+                    matchCount++;
+                }
+            });
+
+            const matchPercentage = (matchCount / currentQ.keywords.length) * 100;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.style.display = 'block';
+
+            if (matchPercentage >= 70) {
+                feedbackDiv.className = 'correct';
+                feedbackDiv.innerHTML = `<strong>Chính xác!</strong> Bạn đã trúng ${matchCount}/${currentQ.keywords.length} từ khóa quan trọng.`;
+            } else {
+                feedbackDiv.className = 'incorrect';
+                feedbackDiv.innerHTML = `<strong>Chưa đủ ý!</strong> Bạn chỉ trúng ${matchCount}/${currentQ.keywords.length} từ khóa. Hãy xem lại đáp án gốc.`;
+            }
+        }
+
+        function showAnswer() {
+            const ansDiv = document.getElementById('original-answer');
+            ansDiv.innerText = "Đáp án gốc:\n" + questions[currentIndex].original_answer + "\n\nTừ khóa cần có: " + questions[currentIndex].keywords.join(", ");
+            ansDiv.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentIndex = (currentIndex + 1) % questions.length;
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
