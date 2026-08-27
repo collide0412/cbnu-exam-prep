@@ -1,0 +1,104 @@
+[
+  {
+    "subject": "Optical Information Processing",
+    "question": "Fundamentals of Geometric Optics and Wave Optics: \n(1-1) ... is the phenomenon in which the direction of light bends when it passes through the boundary between different media.\n(1-2) ... is the phenomenon in which light bends and spreads outward when passing the edge of an obstacle or a narrow gap (slit).\n(1-3) ... is the phenomenon in which the amplitude of a combined wave increases or decreases as two or more waves meet and overlap.",
+    "original_answer": "(1-1) Refraction\n(1-2) Diffraction\n(1-3) Interference",
+    "keywords": ["refraction", "diffraction", "interference"]
+  },
+  {
+    "subject": "Optical Information Processing",
+    "question": "Describe two key advantages of Optical Information Processing compared to existing electronic information processing methods.",
+    "original_answer": "1. Ultra-high speed and high power efficiency: While electrons generate heat and experience signal delays due to resistance, light is not subject to electrical resistance, resulting in almost no heat generation or energy loss.\n2. Large-scale parallel processing: Light has a very high frequency and wide bandwidth. Light of different wavelengths can pass through a single medium simultaneously without interference.",
+    "keywords": ["ultra-high speed", "power efficiency", "resistance", "parallel processing", "without interference"]
+  },
+  {
+    "subject": "Optical Information Processing",
+    "question": "Describe two physical and hardware disadvantages that make commercialization of Optical Information Processing difficult.",
+    "original_answer": "1. High construction costs and manufacturing difficulty: The manufacturing processes for equipment and precision optical components are complex, making initial setup very high.\n2. Physical fragility and limitations in microcircuit implementation: Optical fibers and lenses are susceptible to damage from impact and bending. It is difficult to implement complex and fine curved circuits inside the chip.",
+    "keywords": ["construction costs", "manufacturing difficulty", "fragility", "damage", "curved circuits"]
+  },
+  {
+    "subject": "Optical Information Processing",
+    "question": "The core optical principle of a TFT-LCD (Thin Film Transistor Liquid Crystal Display) is to control the brightness of each pixel by modulating the intensity of light and the optical ( ? ) of liquid crystals.",
+    "original_answer": "Rotation",
+    "keywords": ["rotation"]
+  },
+  {
+    "subject": "Optical Information Processing",
+    "question": "Briefly explain the Spatial Light Modulator (SLM).",
+    "original_answer": "A Spatial Light Modulator (SLM) is an optical device that modulates the amplitude, phase, or polarization of light beams in a two-dimensional space. It functions like a real-time programmable display and is widely used in optical computing for parallel processing, holography, and adaptive optics.",
+    "keywords": ["modulates", "amplitude", "phase", "polarization", "two-dimensional", "parallel processing", "holography"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Define Machine Learning and Deep Learning, and explain the main difference between them.",
+    "original_answer": "Machine Learning allows a computer to learn patterns from data and make predictions or decisions. Deep Learning is a type of Machine Learning that uses deep neural networks with many layers. The main difference is that Deep Learning can learn complex features automatically from large amounts of data.",
+    "keywords": ["learn patterns", "deep neural networks", "many layers", "complex features automatically"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "What is overfitting? Describe how it can be identified when comparing training and validation accuracy.",
+    "original_answer": "Overfitting happens when a model learns the training data too closely and does not generalize well to new data. It is usually seen when training accuracy becomes very high but validation accuracy is much lower or starts to decrease.",
+    "keywords": ["learns too closely", "generalize", "training accuracy high", "validation accuracy lower"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Explain k-fold cross-validation with k = 5. What happens to the data in each iteration?",
+    "original_answer": "The dataset is divided into five equal folds. In each iteration, four folds are used for training and one fold is used for validation. This is repeated five times so every fold is used once for validation, and the five results are averaged.",
+    "keywords": ["five equal folds", "four folds", "training", "one fold", "validation", "averaged"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "What is the purpose of an activation function in a neural network?",
+    "original_answer": "An activation function adds non-linearity to a neural network. This allows the network to learn complex relationships instead of behaving like only a linear model.",
+    "keywords": ["non-linearity", "complex relationships", "linear model"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Compare the Sigmoid, Tanh, and ReLU activation functions, including one limitation of each.",
+    "original_answer": "Sigmoid gives values between 0 and 1, but it can suffer from vanishing gradients. Tanh gives values between -1 and 1 and is zero-centered, but it can also suffer from vanishing gradients. ReLU outputs max(0, x), is simple and fast, but some neurons can become permanently inactive (dead ReLU).",
+    "keywords": ["0 and 1", "vanishing gradients", "-1 and 1", "zero-centered", "max(0, x)", "permanently inactive", "dead relu"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Which activation function is normally used in the output layer for (i) binary classification and (ii) multi-class classification? Explain why.",
+    "original_answer": "For binary classification, Sigmoid is normally used because it gives one probability between 0 and 1. For multi-class classification, Softmax is normally used because it converts the outputs into probabilities whose total is 1 across all classes.",
+    "keywords": ["binary", "sigmoid", "probability", "0 and 1", "multi-class", "softmax", "total is 1"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Explain why CNNs are more suitable than a standard MLP for image classification tasks.",
+    "original_answer": "CNNs use small filters to detect local image features such as edges and shapes. They share the same filter weights across the image, so they use fewer parameters than a standard MLP and preserve important spatial information.",
+    "keywords": ["local image features", "share", "weights", "fewer parameters", "spatial information"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Describe the role of the convolution layer and the pooling layer in a CNN.",
+    "original_answer": "The convolution layer applies filters to detect useful features such as edges, textures, and shapes. The pooling layer reduces the size of feature maps, which lowers computation and makes the representation less sensitive to small position changes.",
+    "keywords": ["detect useful features", "reduces the size", "lowers computation", "less sensitive"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "What is a residual (skip) connection, and why is it used in ResNet?",
+    "original_answer": "A residual connection sends the input of a block directly to a later layer and adds it to the block output. It helps gradients flow through deep networks, making very deep models easier to train.",
+    "keywords": ["directly to a later layer", "adds", "gradients flow", "easier to train"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "What problem with vanilla RNNs do LSTM and GRU address? Briefly explain how.",
+    "original_answer": "Vanilla RNNs have difficulty learning long-term dependencies because gradients can vanish or explode. LSTM and GRU use gates and memory mechanisms to keep useful information for longer and control what should be remembered or forgotten.",
+    "keywords": ["long-term dependencies", "vanish or explode", "gates", "memory", "remembered or forgotten"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Explain the purpose of the self-attention mechanism in a Transformer.",
+    "original_answer": "Self-attention lets each token look at other tokens in the sequence and decide which ones are important. This helps the model build a context-aware representation and capture relationships even between distant positions.",
+    "keywords": ["look at other tokens", "decide which ones are important", "context-aware", "distant positions"]
+  },
+  {
+    "subject": "AI Systems II",
+    "question": "Why does the Transformer architecture require Positional Encoding?",
+    "original_answer": "A Transformer does not process tokens one by one like an RNN, so self-attention alone does not know their order. Positional Encoding adds information about each token's position so the model can understand sequence order.",
+    "keywords": ["not process tokens one by one", "know their order", "token's position", "sequence order"]
+  }
+]
