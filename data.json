@@ -1,0 +1,14 @@
+[
+  {
+    "subject": "Optical Information Processing",
+    "question": "Explain how Fourier optics enables filtering and feature extraction in optical information processing systems.",
+    "original_answer": "Fourier optics models lenses as devices that perform spatial Fourier transforms. By placing masks at the Fourier plane, specific frequency components can be amplified or suppressed for tasks like edge enhancement, noise reduction, and pattern recognition. This allows parallel, high-speed analog processing of image information.",
+    "keywords": ["fourier", "lenses", "frequency", "filtering", "feature extraction", "noise reduction", "pattern recognition"]
+  },
+  {
+    "subject": "AI Systems",
+    "question": "Describe the core components of an AI system pipeline from data collection to model deployment.",
+    "original_answer": "An AI pipeline starts with data collection and preprocessing, followed by feature engineering and model training. The model is validated with suitable metrics, then deployed to production with monitoring for drift, latency, and reliability. Feedback loops support retraining and continuous improvement.",
+    "keywords": ["data collection", "preprocessing", "feature engineering", "training", "validation", "deployment", "monitoring", "retraining"]
+  }
+]

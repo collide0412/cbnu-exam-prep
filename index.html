@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exam Revision</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f0f4ff, #f8fbff);
+        display: grid;
+        place-items: center;
+        color: #1f2937;
+      }
+
+      .card {
+        width: min(760px, 92vw);
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 28px;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: 1.5rem;
+      }
+
+      .meta {
+        margin-bottom: 14px;
+        color: #2563eb;
+        font-weight: 600;
+      }
+
+      #question {
+        margin: 0 0 16px;
+        line-height: 1.55;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 140px;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 12px;
+        font: inherit;
+        resize: vertical;
+        box-sizing: border-box;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        color: #ffffff;
+        background: #2563eb;
+      }
+
+      button.secondary {
+        background: #475569;
+      }
+
+      button.ghost {
+        background: #0f766e;
+      }
+
+      #feedback {
+        margin-top: 14px;
+        font-weight: 600;
+      }
+
+      #answerBox {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        display: none;
+      }
+
+      .ok {
+        color: #15803d;
+      }
+
+      .warn {
+        color: #b91c1c;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Ôn tập tự luận</h1>
+      <div class="meta" id="subject"></div>
+      <p id="question"></p>
+      <textarea id="userAnswer" placeholder="Nhập câu trả lời của bạn..."></textarea>
+
+      <div class="actions">
+        <button id="checkBtn">Kiểm tra</button>
+        <button id="showAnswerBtn" class="secondary">Xem đáp án gốc</button>
+        <button id="nextBtn" class="ghost">Câu tiếp theo</button>
+      </div>
+
+      <div id="feedback"></div>
+      <div id="answerBox"></div>
+    </main>
+
+    <script>
+      const subjectEl = document.getElementById("subject");
+      const questionEl = document.getElementById("question");
+      const userAnswerEl = document.getElementById("userAnswer");
+      const feedbackEl = document.getElementById("feedback");
+      const answerBoxEl = document.getElementById("answerBox");
+      const checkBtn = document.getElementById("checkBtn");
+      const showAnswerBtn = document.getElementById("showAnswerBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      let questions = [];
+      let currentIndex = 0;
+
+      function renderQuestion() {
+        const current = questions[currentIndex];
+        subjectEl.textContent = `Môn: ${current.subject}`;
+        questionEl.textContent = current.question;
+        userAnswerEl.value = "";
+        feedbackEl.textContent = "";
+        feedbackEl.className = "";
+        answerBoxEl.style.display = "none";
+        answerBoxEl.innerHTML = "";
+      }
+
+      checkBtn.addEventListener("click", () => {
+        const current = questions[currentIndex];
+        const userText = userAnswerEl.value.toLowerCase();
+        const matchedCount = current.keywords.filter((keyword) =>
+          userText.includes(keyword.toLowerCase())
+        ).length;
+        const total = current.keywords.length;
+        const percent = total === 0 ? 0 : (matchedCount / total) * 100;
+
+        feedbackEl.className = percent >= 70 ? "ok" : "warn";
+        feedbackEl.textContent =
+          percent >= 70
+            ? `Tốt! Bạn khớp ${matchedCount}/${total} từ khóa (${percent.toFixed(0)}%).`
+            : `Cần bổ sung thêm ý. Bạn mới khớp ${matchedCount}/${total} từ khóa (${percent.toFixed(0)}%).`;
+      });
+
+      showAnswerBtn.addEventListener("click", () => {
+        const current = questions[currentIndex];
+        answerBoxEl.style.display = "block";
+        answerBoxEl.innerHTML = `
+          <strong>Đáp án gốc:</strong>
+          <p>${current.original_answer}</p>
+          <strong>Từ khóa:</strong>
+          <p>${current.keywords.join(", ")}</p>
+        `;
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (!questions.length) return;
+        currentIndex = (currentIndex + 1) % questions.length;
+        renderQuestion();
+      });
+
+      fetch("data.json")
+        .then((response) => response.json())
+        .then((data) => {
+          questions = data;
+          renderQuestion();
+        })
+        .catch(() => {
+          subjectEl.textContent = "Không thể tải dữ liệu";
+          questionEl.textContent = "Vui lòng thử lại sau.";
+        });
+    </script>
+  </body>
+</html>
