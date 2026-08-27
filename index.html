@@ -8,7 +8,22 @@
         body { font-family: Arial, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h1, h2 { color: #2c3e50; }
-        .subject-tag { display: inline-block; background: #3498db; color: white; padding: 5px 10px; border-radius: 4px; font-size: 14px; margin-bottom: 15px; }
+        
+        /* Style cho Dropdown chọn môn */
+        select#subject-select { 
+            background: #3498db; 
+            color: white; 
+            padding: 8px 12px; 
+            border: none; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            margin-bottom: 15px; 
+            cursor: pointer; 
+            outline: none; 
+            font-weight: bold;
+        }
+        select#subject-select option { background: white; color: #333; }
+        
         textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px; resize: vertical; box-sizing: border-box; }
         button { background: #2ecc71; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 4px; margin-right: 10px; }
         button:hover { background: #27ae60; }
@@ -24,12 +39,16 @@
     <div class="container">
         <h1>Ôn tập Tự luận</h1>
         <div id="quiz-container">
-            <span class="subject-tag" id="subject">Loading...</span>
+            <!-- Dropdown chọn môn -->
+            <select id="subject-select" onchange="filterBySubject()">
+                <option value="all">Tất cả các môn</option>
+            </select>
+
             <h2 id="question">Đang tải câu hỏi...</h2>
             <textarea id="answer-input" placeholder="Nhập câu trả lời của bạn vào đây..."></textarea>
             <br>
             <button onclick="checkAnswer()">Kiểm tra</button>
-            <button class="btn-secondary" onclick="showAnswer()">Xem đáp án gốc</button>
+            <button id="toggle-answer-btn" class="btn-secondary" onclick="toggleAnswer()">Xem đáp án gốc</button>
             <button class="btn-secondary" onclick="nextQuestion()">Câu tiếp theo</button>
             
             <div id="feedback"></div>
@@ -38,32 +57,68 @@
     </div>
 
     <script>
-        let questions = [];
+        let allQuestions = [];
+        let filteredQuestions = [];
         let currentIndex = 0;
 
-        // Tải dữ liệu từ data.json
+        // 1. Tải dữ liệu
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-                questions = data;
+                allQuestions = data;
+                filteredQuestions = [...allQuestions]; // Mặc định hiển thị tất cả
+                populateSubjects();
                 loadQuestion();
             });
 
-        function loadQuestion() {
-            if(questions.length === 0) return;
-            document.getElementById('subject').innerText = questions[currentIndex].subject;
-            document.getElementById('question').innerText = questions[currentIndex].question;
-            document.getElementById('answer-input').value = '';
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('original-answer').style.display = 'none';
+        // 2. Lấy danh sách các môn học tự động từ data.json đưa vào Dropdown
+        function populateSubjects() {
+            const select = document.getElementById('subject-select');
+            const subjects = [...new Set(allQuestions.map(q => q.subject))];
+            
+            subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.innerText = subject;
+                select.appendChild(option);
+            });
         }
 
+        // 3. Lọc câu hỏi theo môn học được chọn
+        function filterBySubject() {
+            const selectedSubject = document.getElementById('subject-select').value;
+            
+            if (selectedSubject === 'all') {
+                filteredQuestions = [...allQuestions];
+            } else {
+                filteredQuestions = allQuestions.filter(q => q.subject === selectedSubject);
+            }
+            
+            currentIndex = 0; // Reset về câu đầu tiên của môn đó
+            loadQuestion();
+        }
+
+        // 4. Tải câu hỏi lên màn hình
+        function loadQuestion() {
+            if(filteredQuestions.length === 0) return;
+            
+            document.getElementById('question').innerText = filteredQuestions[currentIndex].question;
+            document.getElementById('answer-input').value = '';
+            document.getElementById('feedback').style.display = 'none';
+            
+            // Reset trạng thái của phần đáp án
+            const ansDiv = document.getElementById('original-answer');
+            const toggleBtn = document.getElementById('toggle-answer-btn');
+            ansDiv.style.display = 'none';
+            toggleBtn.innerText = 'Xem đáp án gốc';
+        }
+
+        // 5. Kiểm tra đáp án
         function checkAnswer() {
             const userAnswer = document.getElementById('answer-input').value.toLowerCase();
-            const currentQ = questions[currentIndex];
+            const currentQ = filteredQuestions[currentIndex];
             let matchCount = 0;
 
-            // Kiểm tra từng keyword
             currentQ.keywords.forEach(keyword => {
                 if (userAnswer.includes(keyword.toLowerCase())) {
                     matchCount++;
@@ -83,14 +138,26 @@
             }
         }
 
-        function showAnswer() {
+        // 6. Logic Bật/Tắt đáp án
+        function toggleAnswer() {
             const ansDiv = document.getElementById('original-answer');
-            ansDiv.innerText = "Đáp án gốc:\n" + questions[currentIndex].original_answer + "\n\nTừ khóa cần có: " + questions[currentIndex].keywords.join(", ");
-            ansDiv.style.display = 'block';
+            const toggleBtn = document.getElementById('toggle-answer-btn');
+            
+            if (ansDiv.style.display === 'none' || ansDiv.style.display === '') {
+                // Hiện đáp án
+                ansDiv.innerText = "Đáp án gốc:\n" + filteredQuestions[currentIndex].original_answer + "\n\nTừ khóa cần có: " + filteredQuestions[currentIndex].keywords.join(", ");
+                ansDiv.style.display = 'block';
+                toggleBtn.innerText = 'Thu đáp án lại';
+            } else {
+                // Thu đáp án
+                ansDiv.style.display = 'none';
+                toggleBtn.innerText = 'Xem đáp án gốc';
+            }
         }
 
+        // 7. Chuyển câu tiếp theo
         function nextQuestion() {
-            currentIndex = (currentIndex + 1) % questions.length;
+            currentIndex = (currentIndex + 1) % filteredQuestions.length;
             loadQuestion();
         }
     </script>
