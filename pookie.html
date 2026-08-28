@@ -1,160 +1,35 @@
-<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Reading | Practice desk</title>
-    <style>
-        :root {
-            --ink: #2f2630;
-            --muted: #746875;
-            --paper: #fffdfd;
-            --canvas: #f8f1f5;
-            --line: #eadce3;
-            --pink: #c94f82;
-            --pink-soft: #f8e7ee;
-            --green: #2f7a62;
-            --shadow: 0 14px 34px rgba(77, 38, 57, .08);
-        }
-        * { box-sizing: border-box; }
-        body { margin: 0; color: var(--ink); background: var(--canvas); font-family: Georgia, 'Times New Roman', serif; }
-        button, select, input { font: inherit; }
-        .topbar { height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; background: var(--paper); border-bottom: 1px solid var(--line); }
-        .brand { color: var(--pink); font: 700 15px 'Trebuchet MS', sans-serif; letter-spacing: .08em; text-transform: uppercase; }
-        .back-link { color: var(--muted); text-decoration: none; font: 600 13px 'Trebuchet MS', sans-serif; }
-        .back-link:hover { color: var(--pink); }
-        .shell { width: min(1180px, 90vw); margin: 34px auto 60px; }
-        .intro { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 26px; }
-        h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 44px); font-weight: 400; letter-spacing: 0; }
-        .intro p { margin: 0; color: var(--muted); font: 14px/1.6 'Trebuchet MS', sans-serif; }
-        .stats { color: var(--pink); font: 700 13px 'Trebuchet MS', sans-serif; white-space: nowrap; }
-        .toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
-        select, input { width: 100%; border: 1px solid var(--line); border-radius: 5px; background: white; color: var(--ink); padding: 11px 12px; outline: none; }
-        select:focus, input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-soft); }
-        .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; }
-        .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 7px; box-shadow: var(--shadow); }
-        .panel-head { padding: 18px 20px; border-bottom: 1px solid var(--line); }
-        .panel-head h2 { margin: 0; font-size: 18px; font-weight: 600; }
-        .panel-head p { margin: 6px 0 0; color: var(--muted); font: 12px 'Trebuchet MS', sans-serif; }
-        .question-list { padding: 8px; max-height: 67vh; overflow-y: auto; }
-        .question { padding: 15px 12px; border-bottom: 1px solid var(--line); }
-        .question:last-child { border-bottom: 0; }
-        .question-label { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; }
-        .q-number { color: var(--pink); font: 700 13px 'Trebuchet MS', sans-serif; }
-        .q-text { font-size: 16px; line-height: 1.55; }
-        .answer { margin-top: 11px; font-family: 'Trebuchet MS', sans-serif; font-size: 13px; }
-        .answer::placeholder { color: #a99ba4; }
-        .empty { padding: 28px 20px; color: var(--muted); font: 14px/1.6 'Trebuchet MS', sans-serif; }
-        .tip { padding: 18px 20px; color: var(--muted); font: 13px/1.6 'Trebuchet MS', sans-serif; }
-        .tip strong { color: var(--ink); }
-        .progress { height: 5px; background: var(--pink-soft); border-radius: 99px; overflow: hidden; margin-top: 14px; }
-        .progress span { display: block; height: 100%; width: 0; background: var(--pink); transition: width .2s ease; }
-        @media (max-width: 760px) {
-            .topbar { padding: 0 5vw; }
-            .shell { width: 92vw; margin-top: 24px; }
-            .intro { display: block; }
-            .stats { display: block; margin-top: 15px; }
-            .toolbar { display: grid; grid-template-columns: 1fr; }
-            .workspace { grid-template-columns: 1fr; }
-            .question-list { max-height: none; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IELTS Reading Practice</title>
+<style>
+:root{--ink:#29242a;--muted:#766d75;--paper:#fff;--bg:#f7f2f5;--pink:#b84272;--pink-light:#f6e4ec;--line:#e6dbe1;--green:#28735c;--red:#a83f4e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif}button,select,input{font:inherit}.top{height:64px;background:var(--paper);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 4vw}.logo{font:700 13px 'Trebuchet MS',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--pink)}.back{font:600 13px 'Trebuchet MS',sans-serif;color:var(--muted);text-decoration:none}.back:hover{color:var(--pink)}.wrap{width:min(1280px,92vw);margin:28px auto 70px}.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}h1{font-size:clamp(28px,4vw,46px);font-weight:400;margin:0 0 7px}.sub{font:14px/1.5 'Trebuchet MS',sans-serif;color:var(--muted)}.timer{font:700 20px 'Trebuchet MS',sans-serif;color:var(--pink);white-space:nowrap}.controls{display:grid;grid-template-columns:1fr 1.8fr auto auto;gap:10px;margin-bottom:18px}select,.btn,input{border:1px solid var(--line);background:#fff;border-radius:5px;padding:11px 12px;color:var(--ink)}select:focus,input:focus{outline:2px solid var(--pink-light);border-color:var(--pink)}.btn{cursor:pointer;font:700 12px 'Trebuchet MS',sans-serif}.btn-primary{background:var(--pink);border-color:var(--pink);color:#fff}.btn-primary:hover{background:#96355d}.btn-quiet:hover{border-color:var(--pink);color:var(--pink)}.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:7px;box-shadow:0 12px 28px #4c233b0d}.panel-head{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.panel-head h2{font-size:18px;font-weight:600;margin:0}.meta{font:12px 'Trebuchet MS',sans-serif;color:var(--muted)}.passage{padding:24px;line-height:1.75;font-size:16px;max-height:72vh;overflow:auto;white-space:pre-line}.passage-placeholder{color:var(--muted);font:14px/1.6 'Trebuchet MS',sans-serif}.questions{max-height:72vh;overflow:auto;padding:5px 20px}.question{padding:18px 0;border-bottom:1px solid var(--line)}.question:last-child{border:0}.qhead{display:flex;gap:12px;align-items:flex-start}.num{color:var(--pink);font:700 13px 'Trebuchet MS',sans-serif;padding-top:3px;min-width:22px}.qtext{font-size:16px;line-height:1.55}.answer{margin:11px 0 0 34px;width:calc(100% - 34px);font:14px 'Trebuchet MS',sans-serif}.result{margin:7px 0 0 34px;font:12px 'Trebuchet MS',sans-serif}.correct{color:var(--green)}.wrong{color:var(--red)}.notice{padding:18px 20px;font:13px/1.6 'Trebuchet MS',sans-serif;color:var(--muted);margin-top:18px}.notice strong{color:var(--ink)}.score{font:700 14px 'Trebuchet MS',sans-serif;color:var(--pink)}.empty{padding:30px 20px;color:var(--muted);font:14px/1.6 'Trebuchet MS',sans-serif}.progress{height:5px;background:var(--pink-light);margin:0 20px 12px;border-radius:10px}.progress span{display:block;height:100%;width:0;background:var(--pink);border-radius:10px;transition:width .2s}.foot{display:flex;justify-content:space-between;align-items:center;padding:13px 20px;border-top:1px solid var(--line)}@media(max-width:850px){.hero{display:block}.timer{display:block;margin-top:14px}.controls{grid-template-columns:1fr 1fr}.controls .btn{width:100%}.layout{grid-template-columns:1fr}.passage,.questions{max-height:none}.passage{font-size:15px}}@media(max-width:480px){.controls{grid-template-columns:1fr}.top{padding:0 5vw}.wrap{width:92vw}.panel-head{padding:15px}.questions{padding:5px 15px}}
+</style>
 </head>
 <body>
-    <header class="topbar">
-        <div class="brand">IELTS Reading / practice desk</div>
-        <a class="back-link" href="index.html">Về trang chủ</a>
-    </header>
-    <main class="shell">
-        <section class="intro">
-            <div>
-                <h1>Practice desk</h1>
-                <p>Chọn một volume và luyện từng nhóm câu hỏi theo nhịp của bạn.</p>
-            </div>
-            <div class="stats" id="stats">Đang tải dữ liệu...</div>
-        </section>
-        <div class="toolbar">
-            <select id="volume-select" aria-label="Chọn volume"></select>
-            <select id="block-select" aria-label="Chọn nhóm câu hỏi"></select>
-        </div>
-        <section class="workspace">
-            <article class="panel">
-                <div class="panel-head">
-                    <h2 id="block-title">Questions</h2>
-                    <p id="block-meta">Chọn nhóm câu hỏi để bắt đầu</p>
-                    <div class="progress"><span id="progress-bar"></span></div>
-                </div>
-                <div class="question-list" id="questions-container">
-                    <div class="empty">Đang tải bộ câu hỏi...</div>
-                </div>
-            </article>
-            <aside class="panel">
-                <div class="panel-head">
-                    <h2>Cách dùng</h2>
-                    <p>Một góc học tập yên tĩnh, không thêm áp lực.</p>
-                </div>
-                <div class="tip"><strong>1. Chọn volume</strong><br>Chuyển giữa các bộ đề từ menu phía trên.</div>
-                <div class="tip"><strong>2. Chọn nhóm câu</strong><br>Mỗi nhóm giữ nguyên khoảng câu hỏi trong đề gốc.</div>
-                <div class="tip"><strong>3. Ghi chú câu trả lời</strong><br>Đáp án được lưu tạm trong trình duyệt cho đến khi bạn tải lại trang.</div>
-            </aside>
-        </section>
-    </main>
-    <script>
-        let data = {};
-        const volumeSelect = document.getElementById('volume-select');
-        const blockSelect = document.getElementById('block-select');
-        const answerState = {};
-
-        fetch('ielts_extracted_data.json')
-            .then(response => response.json())
-            .then(json => {
-                data = json;
-                Object.keys(data).forEach(volume => volumeSelect.add(new Option(volume.replace('_', ' '), volume)));
-                volumeSelect.addEventListener('change', populateBlocks);
-                blockSelect.addEventListener('change', renderQuestions);
-                populateBlocks();
-            })
-            .catch(() => {
-                document.getElementById('questions-container').innerHTML = '<div class="empty">Không thể tải dữ liệu câu hỏi.</div>';
-            });
-
-        function populateBlocks() {
-            blockSelect.innerHTML = '';
-            (data[volumeSelect.value] || []).forEach((block, index) => blockSelect.add(new Option(`${index + 1}. ${block.block_name}`, index)));
-            renderQuestions();
-        }
-
-        function renderQuestions() {
-            const blocks = data[volumeSelect.value] || [];
-            const block = blocks[Number(blockSelect.value)];
-            const list = document.getElementById('questions-container');
-            if (!block) {
-                list.innerHTML = '<div class="empty">Volume này chưa có dữ liệu OCR khả dụng.</div>';
-                document.getElementById('block-title').textContent = 'Questions';
-                document.getElementById('block-meta').textContent = 'Chưa có nhóm câu hỏi';
-                return;
-            }
-            document.getElementById('block-title').textContent = block.block_name;
-            document.getElementById('block-meta').textContent = `${block.items.length} câu hỏi`;
-            list.innerHTML = block.items.map((question, index) => {
-                const key = `${volumeSelect.value}-${blockSelect.value}-${index}`;
-                return `<div class="question"><div class="question-label"><span class="q-number">${question.q_number}</span><span class="q-text">${escapeHtml(question.q_text)}</span></div><input class="answer" data-key="${key}" placeholder="Ghi đáp án của bạn..." value="${escapeHtml(answerState[key] || '')}"></div>`;
-            }).join('');
-            list.querySelectorAll('.answer').forEach(input => input.addEventListener('input', updateProgress));
-            updateProgress();
-        }
-
-        function updateProgress() {
-            const inputs = document.querySelectorAll('.answer');
-            inputs.forEach(input => answerState[input.dataset.key] = input.value);
-            const completed = [...inputs].filter(input => input.value.trim()).length;
-            document.getElementById('progress-bar').style.width = `${inputs.length ? completed / inputs.length * 100 : 0}%`;
-            document.getElementById('stats').textContent = `${completed}/${inputs.length || 0} câu đã ghi đáp án`;
-        }
-
-        function escapeHtml(value) {
-            return value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
-        }
-    </script>
+<header class="top"><div class="logo">IELTS Reading / Practice</div><a class="back" href="index.html">V trang ch</a></header>
+<main class="wrap">
+<section class="hero"><div><h1>Reading test room</h1><div class="sub">Lm bi, theo di thi gian v xem kt qu sau khi np.</div></div><div class="timer" id="timer">60:00</div></section>
+<div class="controls"><select id="volume" aria-label="Chn volume"></select><select id="section" aria-label="Chn passage"></select><button class="btn btn-quiet" id="reset">Lm li</button><button class="btn btn-primary" id="submit">Np bi</button></div>
+<div class="layout"><article class="panel"><div class="panel-head"><h2 id="passage-title">Reading passage</h2><a class="back" id="pdf-link" target="_blank" rel="noopener">M PDF gc</a></div><div class="passage" id="passage"><span class="passage-placeholder">Passage nm trong PDF gc. M file  c ni dung y  trong khi lm bi.</span></div></article>
+<article class="panel"><div class="panel-head"><div><h2 id="section-title">Questions</h2><span class="meta" id="section-meta"></span></div><span class="score" id="score"></span></div><div class="progress"><span id="bar"></span></div><div class="questions" id="questions"><div class="empty">ang ti d liu...</div></div><div class="foot"><span class="meta" id="progress-text">0 cu  in</span><button class="btn btn-quiet" id="answer-toggle">Xem p n</button></div></article></div>
+<div class="panel notice"><strong>Lu :</strong> B  v answer key c ly t cc PDF trong th mc <em>ielts</em>. Nhng cu OCR cha nhn din c p n s c nh du Cha c key, khng tnh vo im.</div>
+</main>
+<script>
+let data={},answers={},submitted=false,seconds=3600,timerId;const $=id=>document.getElementById(id),volume=$('volume'),section=$('section');
+fetch('ielts_extracted_data.json').then(r=>r.json()).then(json=>{data=json;Object.keys(data).forEach(v=>volume.add(new Option(v.replace('_',' '),v)));volume.onchange=fillSections;section.onchange=render;fillSections();timerId=setInterval(tick,1000)}).catch(()=>{$('questions').innerHTML='<div class="empty">Khng th ti b .</div>'});
+function fillSections(){section.innerHTML='';(data[volume.value]?.sections||[]).forEach((s,i)=>section.add(new Option(`${i+1}. ${s.block_name}`,i)));render()}
+function render(){const book=data[volume.value],item=book?.sections?.[Number(section.value)];submitted=false;$('score').textContent='';if(!item){$('questions').innerHTML='<div class="empty">Volume ny cha c section kh dng.</div>';return}$('section-title').textContent=item.block_name;$('section-meta').textContent=`${item.items.length} cu hi`;$('pdf-link').href=book.source_pdf;$('passage-title').textContent=`${volume.value.replace('_',' ')}  ${item.block_name}`;$('questions').innerHTML=item.items.map((q,i)=>{const key=`${volume.value}-${section.value}-${i}`;return `<div class="question"><div class="qhead"><span class="num">${q.q_number}</span><span class="qtext">${esc(q.q_text)}</span></div><input class="answer" data-key="${key}" placeholder="Nhp p n..." value="${esc(answers[key]||'')}" autocomplete="off"><div class="result" id="result-${i}"></div></div>`}).join('');document.querySelectorAll('.answer').forEach(x=>x.oninput=update);update()}
+function update(){const fields=[...document.querySelectorAll('.answer')];fields.forEach(x=>answers[x.dataset.key]=x.value);const done=fields.filter(x=>x.value.trim()).length;$('progress-text').textContent=`${done}/${fields.length} cu  in`;$('bar').style.width=`${fields.length?done/fields.length*100:0}%`}
+function submit(){const item=data[volume.value]?.sections?.[Number(section.value)];if(!item)return;submitted=true;let scored=0,total=0;item.items.forEach((q,i)=>{const input=document.querySelectorAll('.answer')[i],result=$(`result-${i}`);if(q.correct_answer){total++;if(input.value.trim().toUpperCase()===q.correct_answer.toUpperCase()){scored++;result.textContent='ng';result.className='result correct'}else{result.textContent=`Sai  p n: ${q.correct_answer}`;result.className='result wrong'}}else{result.textContent='Cha c answer key trong d liu OCR';result.className='result'}});$('score').textContent=`${scored}/${total}`)}
+function reset(){document.querySelectorAll('.answer').forEach(x=>{x.value='';answers[x.dataset.key]=''});document.querySelectorAll('.result').forEach(x=>x.textContent='');$('score').textContent='';submitted=false;update()}
+function tick(){if(seconds<=0)return;seconds--;const m=String(Math.floor(seconds/60)).padStart(2,'0'),s=String(seconds%60).padStart(2,'0');$('timer').textContent=`${m}:${s}`}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+$('submit').onclick=submit;$('reset').onclick=reset;$('answer-toggle').onclick=()=>{submitted=!submitted;document.querySelectorAll('.result').forEach(x=>x.style.visibility=submitted?'visible':'hidden')};
+</script>
 </body>
 </html>
+
