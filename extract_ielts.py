@@ -13,11 +13,12 @@ HEADING = re.compile(r"^\s*Questions?\s+(\d{1,2})\s*[-\u2013\u2014]\s*(\d{1,2})\
 KEY = re.compile(r"\bKEY\b", re.I)
 NUMBERED = re.compile(r"^\s*(\d{1,2})(?:\s*[.]\s*|\s+)(.*\S)?\s*$")
 NOISE = re.compile(r"Mr\.\s*ZenicNguyen|Tel\s*:\s*\+?[\d.()\s-]{7,}|www\.facebook\.com/IELTSstepbystep|IELTS\s+step[- ]by[- ]step|Your\s+Success\s+is\s+our\s+Mission", re.I)
+PAGE_FURNITURE = re.compile(r"^(?:IELTS Reading Recent Actual Tests.*|Test\s*\d+|Reading Passage\s*\d+|Page\s*\d+|\d{1,3})$", re.I)
 
 
 def pdf_text(path: Path) -> str:
     with fitz.open(path) as doc:
-        text = "\n".join(page.get_text("text") for page in doc)
+        text = "\n\f\n".join(page.get_text("text") for page in doc)
         if len(text.strip()) >= 20000:
             return text
         print(f"OCR {path.name} ({len(doc)} pages)")
@@ -38,7 +39,13 @@ def clean(raw: str) -> list[str]:
     result = []
     for line in raw.splitlines():
         line = re.sub(r"\s+", " ", line).strip()
-        if line and not re.fullmatch(r"\d{1,3}", line):
+        if (not line or line == "\f" or PAGE_FURNITURE.match(line)
+            or re.search(r"zenic|face\s*book|sacebook|success\s*is\s*our|your\s*success|tel\s*:", line, re.I)):
+            continue
+        line = re.sub(r"(?i)(_{2,}|\.{3,}|(?:\s_\s){2,})", "[blank]", line)
+        if result and result[-1].endswith("-") and line[:1].islower():
+            result[-1] = result[-1][:-1] + line
+        else:
             result.append(line)
     return result
 
@@ -51,8 +58,9 @@ def key_values(lines: list[str]) -> dict[str, str]:
             in_key = True
         if not in_key:
             continue
-        for match in re.finditer(r"(?:^|\s)(\d{1,2})\s*[.)]?\s*([A-Za-z]+(?:\s+GIVEN)?)", line):
-            result[match.group(1)] = match.group(2).upper()
+        for match in re.finditer(r"(?:^|\s)(\d{1,2})\s*[.)]?\s*((?:TR\s*UE|TRUE|FALSE|NOT\s*GIVEN|YES|NO|N0T\s*GIVEN|[A-H](?:\s*,\s*[A-H])*|[A-Za-z]+))", line, re.I):
+            value = re.sub(r"\s+", " ", match.group(2).upper()).replace("TR UE", "TRUE").replace("N0T", "NOT")
+            result[match.group(1)] = value
     return result
 
 
