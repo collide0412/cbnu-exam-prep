@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading - Pookie Mode</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #fff0f5; color: #333; display: flex; height: 100vh; overflow: hidden; }
+        .header { position: absolute; top: 0; width: 100%; background: #e84393; color: white; padding: 15px 20px; font-size: 20px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .back-btn { color: white; text-decoration: none; font-size: 16px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 4px; }
+        .split-container { display: flex; width: 100%; height: calc(100vh - 60px); margin-top: 60px; }
+        .pane { flex: 1; padding: 20px; overflow-y: auto; box-sizing: border-box; }
+        .left-pane { border-right: 2px solid #ffb8d1; background: #fff; line-height: 1.8; font-size: 16px; text-align: justify; white-space: pre-line; }
+        .right-pane { background: #fff9fb; }
+        .question-block { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ffb8d1; }
+        .q-num { font-weight: bold; color: #e84393; margin-right: 10px; }
+        input[type="text"] { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        select { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { background: #e84393; color: white; border: none; padding: 15px 30px; font-size: 16px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; margin-bottom: 20px; }
+        .submit-btn:hover { background: #d6307e; }
+        .result-msg { font-weight: bold; margin-top: 10px; display: block; }
+        .correct { color: #27ae60; }
+        .incorrect { color: #c0392b; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span id="test-title">Loading Test...</span>
+        <a href="index.html" class="back-btn">⬅ Back to Home</a>
+    </div>
+
+    <div class="split-container">
+        <!-- Cột trái: Bài đọc -->
+        <div class="pane left-pane" id="passage-container">
+            Đang tải bài đọc...
+        </div>
+
+        <!-- Cột phải: Câu hỏi -->
+        <div class="pane right-pane">
+            <div id="questions-container"></div>
+            <button class="submit-btn" onclick="checkAnswers()">Chấm Điểm Nào Pookie 💖</button>
+            <h2 id="final-score" style="text-align: center; color: #e84393; display: none;"></h2>
+        </div>
+    </div>
+
+    <script>
+        let testData = null;
+
+        fetch('ielts_data.json')
+            .then(response => response.json())
+            .then(data => {
+                testData = data;
+                document.getElementById('test-title').innerText = data.test_title;
+                document.getElementById('passage-container').innerText = data.passage;
+                renderQuestions();
+            });
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            testData.questions.forEach((q, index) => {
+                let html = `<div class="question-block">
+                    <div><span class="q-num">Q${q.q_number}.</span>${q.question}</div>`;
+                
+                if (q.type === 'gap_fill') {
+                    html += `<input type="text" id="ans-${index}" placeholder="Type your answer here...">`;
+                } else if (q.type === 'tfng') {
+                    html += `<select id="ans-${index}">
+                                <option value="">-- Select --</option>
+                                <option value="TRUE">TRUE</option>
+                                <option value="FALSE">FALSE</option>
+                                <option value="NOT GIVEN">NOT GIVEN</option>
+                            </select>`;
+                }
+                
+                html += `<div id="res-${index}" class="result-msg"></div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function checkAnswers() {
+            let correctCount = 0;
+            const total = testData.questions.length;
+
+            testData.questions.forEach((q, index) => {
+                const userAns = document.getElementById(`ans-${index}`).value.trim().toUpperCase();
+                const correctAns = q.correct_answer.toUpperCase();
+                const resDiv = document.getElementById(`res-${index}`);
+
+                if (userAns === correctAns) {
+                    resDiv.innerHTML = '✔ Correct';
+                    resDiv.className = 'result-msg correct';
+                    correctCount++;
+                } else {
+                    resDiv.innerHTML = `✘ Incorrect (Đáp án đúng: ${q.correct_answer})`;
+                    resDiv.className = 'result-msg incorrect';
+                }
+            });
+
+            const scoreDiv = document.getElementById('final-score');
+            scoreDiv.style.display = 'block';
+            scoreDiv.innerText = `Điểm của em: ${correctCount} / ${total} 🌟`;
+        }
+    </script>
+</body>
+</html>
