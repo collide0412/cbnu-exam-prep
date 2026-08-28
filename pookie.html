@@ -16,6 +16,8 @@
         .q-num { font-weight: bold; color: #e84393; margin-right: 10px; }
         input[type="text"] { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         select { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .mcq-label { display: block; margin: 8px 0; cursor: pointer; font-size: 15px; padding: 5px; border-radius: 4px; transition: background 0.2s; }
+        .mcq-label:hover { background: #ffe6f0; }
         .submit-btn { background: #e84393; color: white; border: none; padding: 15px 30px; font-size: 16px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; margin-bottom: 20px; }
         .submit-btn:hover { background: #d6307e; }
         .result-msg { font-weight: bold; margin-top: 10px; display: block; }
@@ -63,13 +65,32 @@
                 
                 if (q.type === 'gap_fill') {
                     html += `<input type="text" id="ans-${index}" placeholder="Type your answer here...">`;
-                } else if (q.type === 'tfng') {
+                } else if (q.type === 'tfng' || q.type === 'ynng') {
                     html += `<select id="ans-${index}">
                                 <option value="">-- Select --</option>
                                 <option value="TRUE">TRUE</option>
                                 <option value="FALSE">FALSE</option>
                                 <option value="NOT GIVEN">NOT GIVEN</option>
+                                <option value="YES">YES</option>
+                                <option value="NO">NO</option>
                             </select>`;
+                } else if (q.type === 'multiple_choice') {
+                    html += `<div style="margin-top: 10px;">`;
+                    q.options.forEach(opt => {
+                        let optLetter = opt.charAt(0); // Lấy ký tự A, B, C, D
+                        html += `<label class="mcq-label">
+                                    <input type="radio" name="ans-${index}" value="${optLetter}"> ${opt}
+                                 </label>`;
+                    });
+                    html += `</div>`;
+                } else if (q.type === 'matching') {
+                    html += `<select id="ans-${index}">
+                                <option value="">-- Select --</option>`;
+                    q.options.forEach(opt => {
+                        let optLetter = opt.split('.')[0]; 
+                        html += `<option value="${optLetter}">${opt}</option>`;
+                    });
+                    html += `</select>`;
                 }
                 
                 html += `<div id="res-${index}" class="result-msg"></div></div>`;
@@ -82,7 +103,16 @@
             const total = testData.questions.length;
 
             testData.questions.forEach((q, index) => {
-                const userAns = document.getElementById(`ans-${index}`).value.trim().toUpperCase();
+                let userAns = "";
+                
+                // Lấy đáp án dựa trên loại câu hỏi
+                if (q.type === 'multiple_choice') {
+                    const selected = document.querySelector(`input[name="ans-${index}"]:checked`);
+                    userAns = selected ? selected.value.trim().toUpperCase() : "";
+                } else {
+                    userAns = document.getElementById(`ans-${index}`).value.trim().toUpperCase();
+                }
+
                 const correctAns = q.correct_answer.toUpperCase();
                 const resDiv = document.getElementById(`res-${index}`);
 
