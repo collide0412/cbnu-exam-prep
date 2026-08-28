@@ -1,134 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Reading - Pookie Mode</title>
+    <title>IELTS Reading | Practice desk</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #fff0f5; color: #333; display: flex; height: 100vh; overflow: hidden; }
-        .header { position: absolute; top: 0; width: 100%; background: #e84393; color: white; padding: 15px 20px; font-size: 20px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        .back-btn { color: white; text-decoration: none; font-size: 16px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 4px; }
-        .split-container { display: flex; width: 100%; height: calc(100vh - 60px); margin-top: 60px; }
-        .pane { flex: 1; padding: 20px; overflow-y: auto; box-sizing: border-box; }
-        .left-pane { border-right: 2px solid #ffb8d1; background: #fff; line-height: 1.8; font-size: 16px; text-align: justify; white-space: pre-line; }
-        .right-pane { background: #fff9fb; }
-        .question-block { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ffb8d1; }
-        .q-num { font-weight: bold; color: #e84393; margin-right: 10px; }
-        input[type="text"] { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        select { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        .mcq-label { display: block; margin: 8px 0; cursor: pointer; font-size: 15px; padding: 5px; border-radius: 4px; transition: background 0.2s; }
-        .mcq-label:hover { background: #ffe6f0; }
-        .submit-btn { background: #e84393; color: white; border: none; padding: 15px 30px; font-size: 16px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; margin-bottom: 20px; }
-        .submit-btn:hover { background: #d6307e; }
-        .result-msg { font-weight: bold; margin-top: 10px; display: block; }
-        .correct { color: #27ae60; }
-        .incorrect { color: #c0392b; }
+        :root {
+            --ink: #2f2630;
+            --muted: #746875;
+            --paper: #fffdfd;
+            --canvas: #f8f1f5;
+            --line: #eadce3;
+            --pink: #c94f82;
+            --pink-soft: #f8e7ee;
+            --green: #2f7a62;
+            --shadow: 0 14px 34px rgba(77, 38, 57, .08);
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--canvas); font-family: Georgia, 'Times New Roman', serif; }
+        button, select, input { font: inherit; }
+        .topbar { height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; background: var(--paper); border-bottom: 1px solid var(--line); }
+        .brand { color: var(--pink); font: 700 15px 'Trebuchet MS', sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+        .back-link { color: var(--muted); text-decoration: none; font: 600 13px 'Trebuchet MS', sans-serif; }
+        .back-link:hover { color: var(--pink); }
+        .shell { width: min(1180px, 90vw); margin: 34px auto 60px; }
+        .intro { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 26px; }
+        h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 44px); font-weight: 400; letter-spacing: 0; }
+        .intro p { margin: 0; color: var(--muted); font: 14px/1.6 'Trebuchet MS', sans-serif; }
+        .stats { color: var(--pink); font: 700 13px 'Trebuchet MS', sans-serif; white-space: nowrap; }
+        .toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
+        select, input { width: 100%; border: 1px solid var(--line); border-radius: 5px; background: white; color: var(--ink); padding: 11px 12px; outline: none; }
+        select:focus, input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-soft); }
+        .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; }
+        .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 7px; box-shadow: var(--shadow); }
+        .panel-head { padding: 18px 20px; border-bottom: 1px solid var(--line); }
+        .panel-head h2 { margin: 0; font-size: 18px; font-weight: 600; }
+        .panel-head p { margin: 6px 0 0; color: var(--muted); font: 12px 'Trebuchet MS', sans-serif; }
+        .question-list { padding: 8px; max-height: 67vh; overflow-y: auto; }
+        .question { padding: 15px 12px; border-bottom: 1px solid var(--line); }
+        .question:last-child { border-bottom: 0; }
+        .question-label { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; }
+        .q-number { color: var(--pink); font: 700 13px 'Trebuchet MS', sans-serif; }
+        .q-text { font-size: 16px; line-height: 1.55; }
+        .answer { margin-top: 11px; font-family: 'Trebuchet MS', sans-serif; font-size: 13px; }
+        .answer::placeholder { color: #a99ba4; }
+        .empty { padding: 28px 20px; color: var(--muted); font: 14px/1.6 'Trebuchet MS', sans-serif; }
+        .tip { padding: 18px 20px; color: var(--muted); font: 13px/1.6 'Trebuchet MS', sans-serif; }
+        .tip strong { color: var(--ink); }
+        .progress { height: 5px; background: var(--pink-soft); border-radius: 99px; overflow: hidden; margin-top: 14px; }
+        .progress span { display: block; height: 100%; width: 0; background: var(--pink); transition: width .2s ease; }
+        @media (max-width: 760px) {
+            .topbar { padding: 0 5vw; }
+            .shell { width: 92vw; margin-top: 24px; }
+            .intro { display: block; }
+            .stats { display: block; margin-top: 15px; }
+            .toolbar { display: grid; grid-template-columns: 1fr; }
+            .workspace { grid-template-columns: 1fr; }
+            .question-list { max-height: none; }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <span id="test-title">Loading Test...</span>
-        <a href="index.html" class="back-btn">⬅ Back to Home</a>
-    </div>
-
-    <div class="split-container">
-        <!-- Cột trái: Bài đọc -->
-        <div class="pane left-pane" id="passage-container">
-            Đang tải bài đọc...
+    <header class="topbar">
+        <div class="brand">IELTS Reading / practice desk</div>
+        <a class="back-link" href="index.html">Về trang chủ</a>
+    </header>
+    <main class="shell">
+        <section class="intro">
+            <div>
+                <h1>Practice desk</h1>
+                <p>Chọn một volume và luyện từng nhóm câu hỏi theo nhịp của bạn.</p>
+            </div>
+            <div class="stats" id="stats">Đang tải dữ liệu...</div>
+        </section>
+        <div class="toolbar">
+            <select id="volume-select" aria-label="Chọn volume"></select>
+            <select id="block-select" aria-label="Chọn nhóm câu hỏi"></select>
         </div>
-
-        <!-- Cột phải: Câu hỏi -->
-        <div class="pane right-pane">
-            <div id="questions-container"></div>
-            <button class="submit-btn" onclick="checkAnswers()">Chấm Điểm Nào Pookie 💖</button>
-            <h2 id="final-score" style="text-align: center; color: #e84393; display: none;"></h2>
-        </div>
-    </div>
-
+        <section class="workspace">
+            <article class="panel">
+                <div class="panel-head">
+                    <h2 id="block-title">Questions</h2>
+                    <p id="block-meta">Chọn nhóm câu hỏi để bắt đầu</p>
+                    <div class="progress"><span id="progress-bar"></span></div>
+                </div>
+                <div class="question-list" id="questions-container">
+                    <div class="empty">Đang tải bộ câu hỏi...</div>
+                </div>
+            </article>
+            <aside class="panel">
+                <div class="panel-head">
+                    <h2>Cách dùng</h2>
+                    <p>Một góc học tập yên tĩnh, không thêm áp lực.</p>
+                </div>
+                <div class="tip"><strong>1. Chọn volume</strong><br>Chuyển giữa các bộ đề từ menu phía trên.</div>
+                <div class="tip"><strong>2. Chọn nhóm câu</strong><br>Mỗi nhóm giữ nguyên khoảng câu hỏi trong đề gốc.</div>
+                <div class="tip"><strong>3. Ghi chú câu trả lời</strong><br>Đáp án được lưu tạm trong trình duyệt cho đến khi bạn tải lại trang.</div>
+            </aside>
+        </section>
+    </main>
     <script>
-        let testData = null;
+        let data = {};
+        const volumeSelect = document.getElementById('volume-select');
+        const blockSelect = document.getElementById('block-select');
+        const answerState = {};
 
-        fetch('ielts_data.json')
+        fetch('ielts_extracted_data.json')
             .then(response => response.json())
-            .then(data => {
-                testData = data;
-                document.getElementById('test-title').innerText = data.test_title;
-                document.getElementById('passage-container').innerText = data.passage;
-                renderQuestions();
+            .then(json => {
+                data = json;
+                Object.keys(data).forEach(volume => volumeSelect.add(new Option(volume.replace('_', ' '), volume)));
+                volumeSelect.addEventListener('change', populateBlocks);
+                blockSelect.addEventListener('change', renderQuestions);
+                populateBlocks();
+            })
+            .catch(() => {
+                document.getElementById('questions-container').innerHTML = '<div class="empty">Không thể tải dữ liệu câu hỏi.</div>';
             });
 
-        function renderQuestions() {
-            const container = document.getElementById('questions-container');
-            testData.questions.forEach((q, index) => {
-                let html = `<div class="question-block">
-                    <div><span class="q-num">Q${q.q_number}.</span>${q.question}</div>`;
-                
-                if (q.type === 'gap_fill') {
-                    html += `<input type="text" id="ans-${index}" placeholder="Type your answer here...">`;
-                } else if (q.type === 'tfng' || q.type === 'ynng') {
-                    html += `<select id="ans-${index}">
-                                <option value="">-- Select --</option>
-                                <option value="TRUE">TRUE</option>
-                                <option value="FALSE">FALSE</option>
-                                <option value="NOT GIVEN">NOT GIVEN</option>
-                                <option value="YES">YES</option>
-                                <option value="NO">NO</option>
-                            </select>`;
-                } else if (q.type === 'multiple_choice') {
-                    html += `<div style="margin-top: 10px;">`;
-                    q.options.forEach(opt => {
-                        let optLetter = opt.charAt(0); // Lấy ký tự A, B, C, D
-                        html += `<label class="mcq-label">
-                                    <input type="radio" name="ans-${index}" value="${optLetter}"> ${opt}
-                                 </label>`;
-                    });
-                    html += `</div>`;
-                } else if (q.type === 'matching') {
-                    html += `<select id="ans-${index}">
-                                <option value="">-- Select --</option>`;
-                    q.options.forEach(opt => {
-                        let optLetter = opt.split('.')[0]; 
-                        html += `<option value="${optLetter}">${opt}</option>`;
-                    });
-                    html += `</select>`;
-                }
-                
-                html += `<div id="res-${index}" class="result-msg"></div></div>`;
-                container.innerHTML += html;
-            });
+        function populateBlocks() {
+            blockSelect.innerHTML = '';
+            (data[volumeSelect.value] || []).forEach((block, index) => blockSelect.add(new Option(`${index + 1}. ${block.block_name}`, index)));
+            renderQuestions();
         }
 
-        function checkAnswers() {
-            let correctCount = 0;
-            const total = testData.questions.length;
+        function renderQuestions() {
+            const blocks = data[volumeSelect.value] || [];
+            const block = blocks[Number(blockSelect.value)];
+            const list = document.getElementById('questions-container');
+            if (!block) {
+                list.innerHTML = '<div class="empty">Volume này chưa có dữ liệu OCR khả dụng.</div>';
+                document.getElementById('block-title').textContent = 'Questions';
+                document.getElementById('block-meta').textContent = 'Chưa có nhóm câu hỏi';
+                return;
+            }
+            document.getElementById('block-title').textContent = block.block_name;
+            document.getElementById('block-meta').textContent = `${block.items.length} câu hỏi`;
+            list.innerHTML = block.items.map((question, index) => {
+                const key = `${volumeSelect.value}-${blockSelect.value}-${index}`;
+                return `<div class="question"><div class="question-label"><span class="q-number">${question.q_number}</span><span class="q-text">${escapeHtml(question.q_text)}</span></div><input class="answer" data-key="${key}" placeholder="Ghi đáp án của bạn..." value="${escapeHtml(answerState[key] || '')}"></div>`;
+            }).join('');
+            list.querySelectorAll('.answer').forEach(input => input.addEventListener('input', updateProgress));
+            updateProgress();
+        }
 
-            testData.questions.forEach((q, index) => {
-                let userAns = "";
-                
-                // Lấy đáp án dựa trên loại câu hỏi
-                if (q.type === 'multiple_choice') {
-                    const selected = document.querySelector(`input[name="ans-${index}"]:checked`);
-                    userAns = selected ? selected.value.trim().toUpperCase() : "";
-                } else {
-                    userAns = document.getElementById(`ans-${index}`).value.trim().toUpperCase();
-                }
+        function updateProgress() {
+            const inputs = document.querySelectorAll('.answer');
+            inputs.forEach(input => answerState[input.dataset.key] = input.value);
+            const completed = [...inputs].filter(input => input.value.trim()).length;
+            document.getElementById('progress-bar').style.width = `${inputs.length ? completed / inputs.length * 100 : 0}%`;
+            document.getElementById('stats').textContent = `${completed}/${inputs.length || 0} câu đã ghi đáp án`;
+        }
 
-                const correctAns = q.correct_answer.toUpperCase();
-                const resDiv = document.getElementById(`res-${index}`);
-
-                if (userAns === correctAns) {
-                    resDiv.innerHTML = '✔ Correct';
-                    resDiv.className = 'result-msg correct';
-                    correctCount++;
-                } else {
-                    resDiv.innerHTML = `✘ Incorrect (Đáp án đúng: ${q.correct_answer})`;
-                    resDiv.className = 'result-msg incorrect';
-                }
-            });
-
-            const scoreDiv = document.getElementById('final-score');
-            scoreDiv.style.display = 'block';
-            scoreDiv.innerText = `Điểm của em: ${correctCount} / ${total} 🌟`;
+        function escapeHtml(value) {
+            return value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
         }
     </script>
 </body>
