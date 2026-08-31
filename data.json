@@ -100,5 +100,35 @@
     "question": "Why does the Transformer architecture require Positional Encoding?",
     "original_answer": "A Transformer does not process tokens one by one like an RNN, so self-attention alone does not know their order. Positional Encoding adds information about each token's position so the model can understand sequence order.",
     "keywords": ["not process tokens one by one", "know their order", "token's position", "sequence order"]
+  },
+  {
+    "subject": "Internet Programming",
+    "question": "What is the definition of MSA (Microservice Architecture)? Explain its advantages and disadvantages.",
+    "original_answer": "MSA is an architectural style that divides a large application into small, independent services. Each service focuses on a specific business function and can be developed, deployed, and scaled independently. Advantages: independent deployment, scalability, fault isolation, technology flexibility, easy maintenance. Disadvantages: complexity, network overhead, data consistency issues, deployment complexity, higher operational cost.",
+    "keywords": ["microservice", "independent services", "independent deployment", "scalability", "fault isolation", "technology flexibility", "complexity", "network overhead", "data consistency"]
+  },
+  {
+    "subject": "Internet Programming",
+    "question": "What are the advantages of FaaS services such as Google Cloud Functions, AWS Lambda, and Azure Functions?",
+    "original_answer": "FaaS allows developers to run individual functions without managing servers. Main advantages: no server management, automatic scaling, pay-as-you-go pricing, event-driven execution, fast development and deployment, high availability. Functions are triggered by events like HTTP requests or database changes.",
+    "keywords": ["serverless", "no server management", "automatic scaling", "pay-as-you-go", "event-driven", "fast development", "high availability"]
+  },
+  {
+    "subject": "Internet Programming",
+    "question": "Spring Data JPA is a technology that connects Java objects with database tables. List five advantages of JPA technology.",
+    "original_answer": "Five advantages of JPA: 1) Reduces SQL code - developers use Java objects instead of writing SQL. 2) Object-Relational Mapping - maps classes to tables and fields to columns. 3) Easier database operations - simple CRUD operations through repositories. 4) Database independence - abstracts from specific database. 5) Relationship management - supports One-to-One, One-to-Many, Many-to-Many relationships.",
+    "keywords": ["reduces SQL code", "ORM", "easier database operations", "CRUD", "database independence", "relationship management", "One-to-One", "One-to-Many", "Many-to-Many"]
+  },
+  {
+    "subject": "Internet Programming",
+    "question": "What is the design pattern in the Spring Framework for realizing loosely coupled programs by injecting dependencies?",
+    "original_answer": "The design pattern is Dependency Injection (DI), a form of Inversion of Control (IoC). DI is a methodology where an object's required dependencies are provided (injected) from outside rather than the object creating them itself. This achieves loose coupling and makes code easier to test and maintain. Spring uses annotations like @Autowired to inject dependencies.",
+    "keywords": ["Dependency Injection", "DI", "Inversion of Control", "IoC", "loosely coupled", "loose coupling", "injected", "Autowired"]
+  },
+  {
+    "subject": "Internet Programming",
+    "question": "What is the standard specification for JSON format tokens used to securely exchange authentication or authorization information between servers and clients?",
+    "original_answer": "The answer is JWT (JSON Web Token). JWT is a compact, URL-safe token format for securely transmitting information as a JSON object. It consists of three parts: Header (token type and signing algorithm), Payload (claims like user ID, role, expiration), and Signature (verifies the token has not been modified). JWT is widely used for authentication and authorization.",
+    "keywords": ["JWT", "JSON Web Token", "authentication", "authorization", "Header", "Payload", "Signature", "secure exchange"]
   }
 ]
