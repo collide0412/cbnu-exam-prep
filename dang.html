@@ -100,6 +100,77 @@
         .dark-mode .correct { color: #d8f3dc; }
         .dark-mode .incorrect { color: #ffd9d9; }
         .question-label { color: var(--accent); text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 1px; }
+        mark {
+            background: rgba(255, 209, 102, 0.45);
+            color: inherit;
+            border-radius: 4px;
+            padding: 1px 4px;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.08);
+        }
+        .dark-mode mark {
+            background: rgba(255, 209, 102, 0.2);
+            color: #fff3c4;
+        }
+        .keyword-hl-1 { background: rgba(255, 122, 122, 0.35); }
+        .keyword-hl-2 { background: rgba(90, 180, 255, 0.35); }
+        .keyword-hl-3 { background: rgba(122, 212, 142, 0.35); }
+        .keyword-hl-4 { background: rgba(255, 191, 92, 0.42); }
+        .keyword-hl-5 { background: rgba(184, 134, 255, 0.35); }
+        .keyword-hl-6 { background: rgba(255, 138, 214, 0.35); }
+        .dark-mode .keyword-hl-1 { background: rgba(255, 122, 122, 0.24); }
+        .dark-mode .keyword-hl-2 { background: rgba(90, 180, 255, 0.24); }
+        .dark-mode .keyword-hl-3 { background: rgba(122, 212, 142, 0.24); }
+        .dark-mode .keyword-hl-4 { background: rgba(255, 191, 92, 0.26); }
+        .dark-mode .keyword-hl-5 { background: rgba(184, 134, 255, 0.24); }
+        .dark-mode .keyword-hl-6 { background: rgba(255, 138, 214, 0.24); }
+        .keyword-priority-core { background: rgba(255, 209, 102, 0.55); }
+        .keyword-priority-support { background: rgba(90, 180, 255, 0.35); }
+        .keyword-priority-detail { background: rgba(122, 212, 142, 0.35); }
+        .dark-mode .keyword-priority-core { background: rgba(255, 209, 102, 0.24); }
+        .dark-mode .keyword-priority-support { background: rgba(90, 180, 255, 0.16); }
+        .dark-mode .keyword-priority-detail { background: rgba(122, 212, 142, 0.16); }
+        .priority-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            vertical-align: middle;
+        }
+        .badge-core { background: rgba(255, 209, 102, 0.7); color: #563d00; }
+        .badge-support { background: rgba(90, 180, 255, 0.5); color: #083b5d; }
+        .badge-detail { background: rgba(122, 212, 142, 0.5); color: #0d4c2d; }
+        .dark-mode .badge-core { color: #ffe9a8; }
+        .dark-mode .badge-support { color: #dfeeff; }
+        .dark-mode .badge-detail { color: #dafce8; }
+        .answer-block {
+            display: block;
+            margin: 8px 0;
+            padding: 8px 10px;
+            border-left: 4px solid var(--accent);
+            background: rgba(22, 125, 127, 0.05);
+            border-radius: 6px;
+        }
+        .dark-mode .answer-block {
+            background: rgba(85, 194, 181, 0.08);
+        }
+        .missing-word {
+            color: red; font-weight: bold; text-decoration: underline; }
+        .dark-mode .missing-word { color: #ff6b6b; }
+        .keyword-hit {
+            background: rgba(39, 174, 96, 0.18);
+            color: inherit;
+            border-radius: 4px;
+            padding: 1px 4px;
+            font-weight: 700;
+        }
+        .dark-mode .keyword-hit {
+            background: rgba(39, 174, 96, 0.28);
+            color: #dfffe9;
+        }
         @media (max-width: 600px) {
             body { padding: 12px; }
             .container { padding: 22px 18px; border-radius: 10px; }
@@ -149,6 +220,13 @@
             <br>
             <button onclick="checkAnswer()">Kiểm tra</button>
             <button id="toggle-answer-btn" class="btn-secondary" onclick="toggleAnswer()">Xem đáp án gốc</button>
+            <button class="btn-secondary" onclick="toggleKeywordHighlight()">Bật/Tắt highlight</button>
+            <button class="btn-secondary" onclick="toggleGroupedHighlight()">Highlight theo nhóm</button>
+            <button class="btn-secondary" onclick="togglePriorityHighlight()">Highlight theo mức độ</button>
+            <button class="btn-secondary" onclick="toggleMemoryHighlight()">Highlight theo độ nhớ</button>
+            <button class="btn-secondary" onclick="toggleFocusMode()">Chế độ tập trung</button>
+            <button class="btn-secondary" onclick="toggleRecallOnlyMode()">Chế độ nhớ trước</button>
+            <button class="btn-secondary" onclick="toggleTypingFocusMode()">Không highlight khi gõ</button>
             <button class="btn-secondary" onclick="nextQuestion()">Câu tiếp theo</button>
             <button class="btn-shuffle" onclick="shuffleQuestions()">🔀 Xáo trộn câu hỏi</button>
             
@@ -168,6 +246,13 @@
         let filteredQuestions = [];
         let currentIndex = 0;
         let isDueReview = false;
+        let highlightEnabled = true;
+        let groupedHighlightMode = false;
+        let priorityHighlightMode = false;
+        let memoryHighlightMode = false;
+        let focusMode = false;
+        let recallOnlyMode = false;
+        let typingFocusMode = false;
         const memoryKey = 'dangs-mode-memory-v1';
         let memory = JSON.parse(localStorage.getItem(memoryKey) || '{}');
         const synonymMap = {
@@ -244,12 +329,131 @@
             setTimeout(() => { notif.style.display = 'none'; }, 2000);
         }
 
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeRegExp(text) {
+            return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function getMemoryModeClass(question) {
+            const id = questionId(question);
+            const entry = memory[id];
+            if (!entry) return 'keyword-priority-core';
+            if (entry.level >= 3) return 'keyword-priority-detail';
+            if (entry.level === 2) return 'keyword-priority-support';
+            return 'keyword-priority-core';
+        }
+
+        function renderPriorityLegend() {
+            return [
+                '<span class="priority-badge badge-core">CORE</span>',
+                '<span class="priority-badge badge-support">SUPPORT</span>',
+                '<span class="priority-badge badge-detail">DETAIL</span>'
+            ].join('');
+        }
+
+        function shouldHideHighlightsForTyping() {
+            return typingFocusMode && document.getElementById('answer-input').value.trim().length > 0;
+        }
+
+        function renderHighlightedText(text, keywords) {
+            if (!highlightEnabled) return escapeHtml(text);
+            if (shouldHideHighlightsForTyping()) return escapeHtml(text);
+            const uniqueKeywords = [...new Set((keywords || []).map(k => String(k).trim()).filter(Boolean))]
+                .sort((a, b) => b.length - a.length);
+
+            let html = escapeHtml(text);
+            if (focusMode) {
+                const focusKeywords = uniqueKeywords.slice(0, Math.min(3, uniqueKeywords.length));
+                focusKeywords.forEach(keyword => {
+                    const pattern = escapeRegExp(keyword);
+                    const regex = new RegExp(`(${pattern})`, 'gi');
+                    html = html.replace(regex, '<mark class="keyword-priority-core">$1</mark>');
+                });
+                return html;
+            }
+            if (recallOnlyMode) {
+                return escapeHtml(text);
+            }
+            if (typingFocusMode) {
+                return escapeHtml(text);
+            }
+
+            if (memoryHighlightMode) {
+                const currentQ = filteredQuestions[currentIndex];
+                const colorClass = currentQ ? getMemoryModeClass(currentQ) : 'keyword-priority-core';
+                uniqueKeywords.forEach(keyword => {
+                    const pattern = escapeRegExp(keyword);
+                    const regex = new RegExp(`(${pattern})`, 'gi');
+                    html = html.replace(regex, `<mark class="${colorClass}">$1</mark>`);
+                });
+                return html;
+            }
+
+            if (priorityHighlightMode) {
+                uniqueKeywords.forEach((keyword, index) => {
+                    const levelClass = index % 3 === 0
+                        ? 'keyword-priority-core'
+                        : index % 3 === 1
+                            ? 'keyword-priority-support'
+                            : 'keyword-priority-detail';
+                    const pattern = escapeRegExp(keyword);
+                    const regex = new RegExp(`(${pattern})`, 'gi');
+                    html = html.replace(regex, `<mark class="${levelClass}">$1</mark>`);
+                });
+                return html;
+            }
+
+            if (groupedHighlightMode) {
+                uniqueKeywords.forEach((keyword, index) => {
+                    const colorClass = `keyword-hl-${((index % 6) + 1)}`;
+                    const pattern = escapeRegExp(keyword);
+                    const regex = new RegExp(`(${pattern})`, 'gi');
+                    html = html.replace(regex, `<mark class="${colorClass}">$1</mark>`);
+                });
+                return html;
+            }
+
+            uniqueKeywords.forEach(keyword => {
+                const pattern = escapeRegExp(keyword);
+                const regex = new RegExp(`(${pattern})`, 'gi');
+                html = html.replace(regex, '<mark>$1</mark>');
+            });
+            return html;
+        }
+
+        function renderQuestionWithHighlights() {
+            const currentQ = filteredQuestions[currentIndex];
+            if (!currentQ) return;
+            const questionText = `(Câu ${currentIndex + 1}/${filteredQuestions.length}) ${currentQ.question}`;
+            const baseHtml = renderHighlightedText(questionText, currentQ.keywords);
+            document.getElementById('question').innerHTML = `${renderPriorityLegend()}<br>${baseHtml}`;
+        }
+
         function loadQuestion() {
             if(filteredQuestions.length === 0) return;
-            
-            // Hiển thị tiến độ câu hỏi (VD: Câu 1/15)
-            document.getElementById('question').innerText = `(Câu ${currentIndex + 1}/${filteredQuestions.length}) ` + filteredQuestions[currentIndex].question;
+            renderQuestionWithHighlights();
             document.getElementById('answer-input').value = '';
+            document.getElementById('answer-input').addEventListener('input', function() {
+                renderQuestionWithHighlights();
+                const currentQ = filteredQuestions[currentIndex];
+                const ansDiv = document.getElementById('original-answer');
+                if (ansDiv.style.display !== 'none' && currentQ) {
+                    const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                    const answerBlocks = answerText
+                        .split(/\n\n+/)
+                        .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                        .join('');
+                    ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+                }
+            });
             document.getElementById('feedback').style.display = 'none';
             const recallPanel = document.getElementById('recall-panel');
             recallPanel.innerHTML = '<p>Bạn nhớ câu này đến mức nào?</p>' +
@@ -269,10 +473,12 @@
             const currentQ = filteredQuestions[currentIndex];
             let matchCount = 0;
             let missingKeywords = [];
+            let matchedKeywords = [];
 
             currentQ.keywords.forEach(keyword => {
                 if (matchesKeyword(userAnswer, keyword)) {
                     matchCount++;
+                    matchedKeywords.push(keyword);
                 } else {
                     missingKeywords.push(keyword);
                 }
@@ -285,10 +491,11 @@
 
             if (matchPercentage >= 70) {
                 feedbackDiv.className = 'correct';
-                feedbackDiv.innerHTML = `<strong>Chính xác!</strong> Bạn đã trúng ${matchCount}/${currentQ.keywords.length} từ khóa quan trọng.`;
+                const matchedHighlighted = matchedKeywords.map(kw => `<span class="keyword-hit">${escapeHtml(kw)}</span>`).join(', ');
+                feedbackDiv.innerHTML = `<strong>Chính xác!</strong> Bạn đã trúng ${matchCount}/${currentQ.keywords.length} từ khóa quan trọng.<br>Những ý bạn đã nêu: ${matchedHighlighted}`;
             } else {
                 feedbackDiv.className = 'incorrect';
-                let missingHTML = missingKeywords.map(kw => `<span class="missing-word">${kw}</span>`).join(", ");
+                let missingHTML = missingKeywords.map(kw => `<span class="missing-word">${escapeHtml(kw)}</span>`).join(", ");
                 feedbackDiv.innerHTML = `<strong>Chưa đủ ý!</strong> Bạn trúng ${matchCount}/${currentQ.keywords.length} từ khóa.<br>Bạn đang thiếu hoặc gõ sai các ý trọng tâm sau: ${missingHTML}`;
             }
         }
@@ -333,9 +540,15 @@
         function toggleAnswer() {
             const ansDiv = document.getElementById('original-answer');
             const toggleBtn = document.getElementById('toggle-answer-btn');
+            const currentQ = filteredQuestions[currentIndex];
             
             if (ansDiv.style.display === 'none' || ansDiv.style.display === '') {
-                ansDiv.innerText = "Đáp án gốc:\n" + filteredQuestions[currentIndex].original_answer + "\n\nTừ khóa cần có: " + filteredQuestions[currentIndex].keywords.join(", ");
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
                 ansDiv.style.display = 'block';
                 toggleBtn.innerText = 'Thu đáp án lại';
             } else {
@@ -406,6 +619,166 @@
             notif.innerText = message;
             notif.style.display = 'inline';
             setTimeout(() => { notif.style.display = 'none'; }, 2500);
+        }
+
+        function toggleKeywordHighlight() {
+            highlightEnabled = !highlightEnabled;
+            renderQuestionWithHighlights();
+
+            const currentQ = filteredQuestions[currentIndex];
+            const ansDiv = document.getElementById('original-answer');
+            if (ansDiv.style.display !== 'none' && currentQ) {
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+            }
+
+            if (highlightEnabled) {
+                showShuffleNotification('Highlight từ khóa đã bật.');
+            } else {
+                showShuffleNotification('Highlight từ khóa đã tắt.');
+            }
+        }
+
+        function toggleGroupedHighlight() {
+            groupedHighlightMode = !groupedHighlightMode;
+            priorityHighlightMode = false;
+            memoryHighlightMode = false;
+            focusMode = false;
+            recallOnlyMode = false;
+            typingFocusMode = false;
+            renderQuestionWithHighlights();
+
+            const currentQ = filteredQuestions[currentIndex];
+            const ansDiv = document.getElementById('original-answer');
+            if (ansDiv.style.display !== 'none' && currentQ) {
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+            }
+
+            showShuffleNotification(groupedHighlightMode ? 'Đã bật highlight theo nhóm màu.' : 'Đã tắt highlight theo nhóm màu.');
+        }
+
+        function togglePriorityHighlight() {
+            priorityHighlightMode = !priorityHighlightMode;
+            groupedHighlightMode = false;
+            memoryHighlightMode = false;
+            focusMode = false;
+            recallOnlyMode = false;
+            typingFocusMode = false;
+            renderQuestionWithHighlights();
+
+            const currentQ = filteredQuestions[currentIndex];
+            const ansDiv = document.getElementById('original-answer');
+            if (ansDiv.style.display !== 'none' && currentQ) {
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+            }
+
+            showShuffleNotification(priorityHighlightMode ? 'Đã bật highlight theo mức độ ưu tiên.' : 'Đã tắt highlight theo mức độ ưu tiên.');
+        }
+
+        function toggleMemoryHighlight() {
+            memoryHighlightMode = !memoryHighlightMode;
+            groupedHighlightMode = false;
+            priorityHighlightMode = false;
+            focusMode = false;
+            recallOnlyMode = false;
+            typingFocusMode = false;
+            renderQuestionWithHighlights();
+
+            const currentQ = filteredQuestions[currentIndex];
+            const ansDiv = document.getElementById('original-answer');
+            if (ansDiv.style.display !== 'none' && currentQ) {
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+            }
+
+            showShuffleNotification(memoryHighlightMode ? 'Đã bật highlight theo độ nhớ.' : 'Đã tắt highlight theo độ nhớ.');
+        }
+
+        function toggleFocusMode() {
+            focusMode = !focusMode;
+            groupedHighlightMode = false;
+            priorityHighlightMode = false;
+            memoryHighlightMode = false;
+            recallOnlyMode = false;
+            typingFocusMode = false;
+            renderQuestionWithHighlights();
+
+            const currentQ = filteredQuestions[currentIndex];
+            const ansDiv = document.getElementById('original-answer');
+            if (ansDiv.style.display !== 'none' && currentQ) {
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+            }
+
+            showShuffleNotification(focusMode ? 'Đã bật chế độ tập trung: chỉ hiện 3 keyword quan trọng.' : 'Đã tắt chế độ tập trung.');
+        }
+
+        function toggleRecallOnlyMode() {
+            recallOnlyMode = !recallOnlyMode;
+            focusMode = false;
+            groupedHighlightMode = false;
+            priorityHighlightMode = false;
+            memoryHighlightMode = false;
+            typingFocusMode = false;
+            renderQuestionWithHighlights();
+
+            const currentQ = filteredQuestions[currentIndex];
+            const ansDiv = document.getElementById('original-answer');
+            if (ansDiv.style.display !== 'none' && currentQ) {
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+            }
+
+            showShuffleNotification(recallOnlyMode ? 'Đã bật chế độ nhớ trước: không highlight khi đang tự nhớ.' : 'Đã tắt chế độ nhớ trước.');
+        }
+
+        function toggleTypingFocusMode() {
+            typingFocusMode = !typingFocusMode;
+            recallOnlyMode = false;
+            focusMode = false;
+            groupedHighlightMode = false;
+            priorityHighlightMode = false;
+            memoryHighlightMode = false;
+            renderQuestionWithHighlights();
+
+            const currentQ = filteredQuestions[currentIndex];
+            const ansDiv = document.getElementById('original-answer');
+            if (ansDiv.style.display !== 'none' && currentQ) {
+                const answerText = `${currentQ.original_answer}\n\nTừ khóa cần có: ${currentQ.keywords.join(', ')}`;
+                const answerBlocks = answerText
+                    .split(/\n\n+/)
+                    .map((block) => `<span class="answer-block">${renderHighlightedText(block, currentQ.keywords)}</span>`)
+                    .join('');
+                ansDiv.innerHTML = `Đáp án gốc:<br>${answerBlocks}`;
+            }
+
+            showShuffleNotification(typingFocusMode ? 'Đã bật: không highlight khi bạn đang gõ đáp án.' : 'Đã tắt: highlight lại hoạt động khi gõ đáp án.');
         }
 
         function toggleTheme() {
